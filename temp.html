@@ -86,13 +86,13 @@ function deleteDrop(element){
   }
   
   function setElement(){
-    var changingElement = document.getElementById("changingElement");
+    var changingElement = document.getElementById(changingElement);
     var theContent = "";
     for(var i = 1; i < allTableNumber + 1; i++){ // Table Id start with 1;
-      console.log(document.getElementById("Tr" + Number (i)).child[0].innerHTML);
-      theContent = theContent + document.getElementById("Tr" + Number (i)).child[0].innerHTML + " = " + document.getElementById("Tr" + Number (i)).child[1].innerHTML;
+      //console.log(document.getElementById("Tr" + Number (i)).children);
+      theContent = theContent + document.getElementById("Tr" + Number (i)).children[0].innerHTML + " = " + document.getElementById("Tr" + Number (i)).children[1].innerHTML;
       
-      
+      document.getElementById(changingElement) = theContent;
       //changingElement.theContent = document.getElementById("Tr" + i + 1).child[1];
     }
   }
