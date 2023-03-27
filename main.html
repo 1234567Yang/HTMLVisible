@@ -1,0 +1,55 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<script type="text/javascript">
+  var dataElement;
+  var i = 0;
+function allowDrop(element)
+{
+element.preventDefault();
+}
+
+function drag(element)
+{
+//element.dataTransfer.setData("theElement",element.target);
+//console.log(element.target);
+  dataElement = element.target;
+}
+
+function drop(element)
+{
+//element.preventDefault();
+//var data = element.dataTransfer.getData("theElement");
+//console.log(data);
+//element.appendChild(data.id);
+  console.log(dataElement);
+  
+  i = i + 1;
+  var clonedNode = dataElement.cloneNode(true); // 克隆节点
+  clonedNode.setAttribute("id", "div-" + i); // 修改一下id 值，避免id 重复
+  
+  var dropTo = document.getElementById("dropTo");
+  console.log(dropTo);
+  dropTo.appendChild(clonedNode); // 在父节点插入克隆的节点
+}
+function deleteDrop(element){
+    if(dataElement.parentNode.id == "dropTo"){
+      dataElement.remove()
+    }
+  }
+</script>
+</head>
+<body>
+
+  
+<div class="dropDivList" ondrop="drop(event)" ondragover="allowDrop(event)">
+  <img src="https://www.w3school.com.cn/i/eg_dragdrop_w3school.gif" draggable="true" ondragstart="drag(event)" id="drag1">
+</div>
+  
+<div id = "dropTo" class="dropDiv" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+  
+<div class="deleteDiv" ondrop="deleteDrop(event)" ondragover="allowDrop(event)">
+  delete
+  </div>
+</body>
+</html>
