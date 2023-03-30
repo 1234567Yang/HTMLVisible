@@ -1,9 +1,14 @@
 <!DOCTYPE HTML>
 <html>
 <head>
+<link rel="stylesheet" id="wp-block-library-css" href="https://rawcdn.githack.com/1234567Yang/YPortable/321a48a961a0582fbb638072da238b7db2cf7773/CSS/YPortable.css" type="text/css">
+<link rel="stylesheet" id="wp-block-library-css" href="https://rawcdn.githack.com/1234567Yang/YPortable/321a48a961a0582fbb638072da238b7db2cf7773/CSS/YPortable.common.css" type="text/css">
+  
 <script type="text/javascript">
   var dataElement;
-  var i = 0;
+  var changingElement;
+  var allNumber = 0;
+  var allTableNumber = 0;
 function allowDrop(element)
 {
 element.preventDefault();
@@ -22,34 +27,115 @@ function drop(element)
 //var data = element.dataTransfer.getData("theElement");
 //console.log(data);
 //element.appendChild(data.id);
-  console.log(dataElement);
+  //console.log(dataElement);
   
-  i = i + 1;
+  allNumber = allNumber + 1;
   var clonedNode = dataElement.cloneNode(true); // 克隆节点
-  clonedNode.setAttribute("id", "div-" + i); // 修改一下id 值，避免id 重复
+  clonedNode.setAttribute("id", "id" + allNumber); // 修改一下id 值，避免id 重复
   
   var dropTo = document.getElementById("dropTo");
-  console.log(dropTo);
+  //console.log(dropTo);
   dropTo.appendChild(clonedNode); // 在父节点插入克隆的节点
 }
 function deleteDrop(element){
+  console.log(dataElement);
     if(dataElement.parentNode.id == "dropTo"){
       dataElement.remove()
     }
+  }
+  
+  function showAttributes(element){
+    changingElement = element.target.id;
+    var AttElement = String(element.target.outerHTML);
+    //console.log(changingElement);
+    
+    var TheElementArray = AttElement.split(" ");
+    console.log(TheElementArray);
+    
+    var Attribute = "";
+    resetTable();
+    for(var i = 0; i < TheElementArray.length - 1; i++){ // from the second one to count;
+//['<img', 'src="https://www.w3school.com.cn/i/eg_dragdrop_w3school.gif"', 'draggable="true"', 'ondragstart="drag(event)"', 'id="div-1"', 'onclick="showAttributes(event)">']
+      Attribute = TheElementArray[i + 1];
+      
+      //console.log(Attribute);
+      
+      var TempElementArray = Attribute.split("=");
+      //console.log(TempElementArray[1]);
+      if(i != TheElementArray.length - 1 - 1){
+        addToTable(TempElementArray[0],TempElementArray[1].substring(1,TempElementArray[1].length - 1)); 
+      }else{ addToTable(TempElementArray[0],TempElementArray[1].substring(1,TempElementArray[1].length - 2)); // removing > from the last one and " from it
+      }
+
+    }
+    
+  }
+  
+  function addToTable(name, content){
+    allTableNumber = allTableNumber + 1;
+    var clonedNode = document.getElementById("ExampleTr").cloneNode(true);
+    console.log("Tr" + allTableNumber);
+   clonedNode.setAttribute("id", "Tr" + allTableNumber);
+    clonedNode.children[0].innerHTML = name;
+    clonedNode.children[1].innerHTML = content;
+  document.getElementById("theTable").appendChild(clonedNode);
+  }
+  
+  function resetTable(){
+
+    var Content = document.getElementById("ExampleTr").innerHTML;
+    document.getElementById("theTable").innerHTML = '<tr id="ExampleTr">' + Content + '</tr>';
+    console.log(document.getElementById("theTable"));
+    allTableNumber = 0;
+  }
+  
+  function setElement(){
+    var changingElementContent = document.getElementById(changingElement);
+    var originalElement = String(changingElementContent.outerHTML).split(" ");
+    var theContent = originalElement[0] + " ";
+    for(var i = 1; i < allTableNumber + 1; i++){ // Table Id start with 1;
+      //console.log(document.getElementById("Tr" + Number (i)).children);
+      theContent = theContent + document.getElementById("Tr" + Number (i)).children[0].innerHTML + "=" + '"' + document.getElementById("Tr" + Number (i)).children[1].innerHTML + '"' + " ";
+      //changingElement.theContent = document.getElementById("Tr" + i + 1).child[1];
+    }
+    theContent = theContent + originalElement[originalElement.length - 1];
+    console.log(theContent);
+    changingElementContent.outerHTML = theContent;
   }
 </script>
 </head>
 <body>
 
   
-<div class="dropDivList" ondrop="drop(event)" ondragover="allowDrop(event)">
-  <img src="https://www.w3school.com.cn/i/eg_dragdrop_w3school.gif" draggable="true" ondragstart="drag(event)" id="drag1">
-</div>
+<div id ="top">
   
-<div id = "dropTo" class="dropDiv" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
-  
-<div class="deleteDiv" ondrop="deleteDrop(event)" ondragover="allowDrop(event)">
+  </div>
+
+  <div id = "leftForm">
+    <div id="deleteDiv" ondrop="deleteDrop(event)" ondragover="allowDrop(event)">
   delete
   </div>
+  
+  <table border="1" id="theTable" class="bright" onkeyup="setElement()">
+    <tbody></tbody>
+    <tr id="ExampleTr">
+        <td id="ExampleTrName">The name</td>
+        <td contenteditable="true">Content</td>
+    </tr>
+</table>
+    
+    
+  </div>
+<div id="main">
+  <div id="dropTo" class="dropDiv" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+  </div> 
+  
+  
+  <div id = "rightForm">
+    <div id="dropDivList" ondrop="drop(event)" ondragover="allowDrop(event)">
+    <img src="https://www.w3school.com.cn/i/eg_dragdrop_w3school.gif" draggable="true" ondragstart="drag(event)" id="drag1" onclick="showAttributes(event)">
+</div>
+  </div>
+
 </body>
 </html>
